@@ -41,58 +41,58 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
     };
 
     return (
-        <div className="fade-in" style={{ maxWidth: '1000px', margin: '0 auto', paddingBottom: '5rem', overflowX: 'hidden' }}>
+        <div className="fade-in" style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', paddingBottom: '5rem', boxSizing: 'border-box' }}>
 
-            {/* Sticky Score Header - Super Compact for Mobile */}
+            {/* Sticky Score Header */}
             <div style={{
                 position: 'sticky',
-                top: '0px',
+                top: 0,
                 zIndex: 100,
-                margin: '0 -1rem 1rem -1rem',
-                padding: '0.5rem',
-                background: 'rgba(36, 36, 36, 0.95)',
+                width: '100%',
+                background: 'rgba(36, 36, 36, 0.98)', // Slightly more unnecessary transparency
                 backdropFilter: 'blur(12px)',
                 borderBottom: '1px solid rgba(255,255,255,0.1)',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
-                borderRadius: '0 0 16px 16px', // Rounded only at bottom
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center'
+                boxShadow: '0 4px 10px rgba(0,0,0,0.4)',
+                padding: '0.5rem 0', // Vertical padding only
+                marginBottom: '1rem'
             }}>
                 {stake && (
-                    <div style={{ marginBottom: '0.4rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                        <Gift color="#FF69B4" size={16} />
-                        <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>{stake}</span>
+                    <div style={{ marginBottom: '0.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                        <Gift color="#FF69B4" size={14} />
+                        <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>{stake}</span>
                     </div>
                 )}
 
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: `repeat(${players.length}, 1fr)`,
-                    gap: '4px', // Tighter gap
+                    gap: '2px', // Minimal gap
+                    padding: '0 4px', // Minimal side padding
                     width: '100%',
+                    boxSizing: 'border-box'
                 }}>
                     {players.map(p => (
-                        <div key={p.id} className="glass-panel" style={{
+                        <div key={p.id} style={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center',
-                            border: p.score <= 5 ? '2px solid rgba(255, 107, 107, 0.8)' : '1px solid rgba(255, 255, 255, 0.1)',
-                            padding: '0.4rem 0.2rem', // Reduced padding
-                            minWidth: 0,
-                            background: 'rgba(255, 255, 255, 0.05)'
+                            background: p.score <= 5 ? 'rgba(255, 107, 107, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                            border: p.score <= 5 ? '1px solid #ff6b6b' : '1px solid rgba(255, 255, 255, 0.1)',
+                            borderRadius: '8px',
+                            padding: '0.3rem 0',
+                            minWidth: 0
                         }}>
                             <div style={{
-                                fontSize: '0.8rem', // Smaller Name
+                                fontSize: '0.75rem',
                                 fontWeight: 'bold',
-                                marginBottom: '0px',
                                 whiteSpace: 'nowrap',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 maxWidth: '100%',
-                                opacity: 0.9
+                                opacity: 0.9,
+                                padding: '0 2px'
                             }}>
                                 {p.name}
                             </div>
-                            <div style={{ fontSize: '2rem', lineHeight: 1, fontWeight: 800, color: p.score <= 5 ? '#ff6b6b' : 'white' }}>
+                            <div style={{ fontSize: '1.8rem', lineHeight: 1.1, fontWeight: 800, color: p.score <= 5 ? '#ff6b6b' : 'white' }}>
                                 {p.score}
                             </div>
                         </div>
@@ -100,46 +100,54 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
                 </div>
             </div>
 
-            {/* Quick Input Grid - Compact and closer to top */}
-            <div className="glass-panel" style={{ marginBottom: '2rem', overflowX: 'auto', padding: '1rem 0.5rem' }}>
-                <h2 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', textAlign: 'center' }}>Hızlı Skor Girişi</h2>
+            {/* Quick Input Grid - Scrollable */}
+            <div className="glass-panel" style={{
+                marginBottom: '2rem',
+                padding: '1rem 0.5rem',
+                margin: '0 0.5rem 2rem 0.5rem' // Margin from screen edges
+            }}>
+                <h2 style={{ margin: '0 0 0.8rem 0', fontSize: '1.1rem', textAlign: 'center' }}>Hızlı Skor Girişi</h2>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(80px, 1fr) repeat(4, 1fr)', gap: '8px', alignItems: 'center', minWidth: '500px' }}>
-                    {/* Header */}
-                    <div style={{ fontSize: '0.9rem', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>KAZANAN</div>
-                    {winTypes.map(t => (
-                        <div key={t.value} style={{ fontSize: '0.9rem', textAlign: 'center', fontWeight: 'bold', color: t.color, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>
-                            {t.value}
-                        </div>
-                    ))}
+                {/* Scroll Container */}
+                <div style={{ overflowX: 'auto', paddingBottom: '5px', WebkitOverflowScrolling: 'touch' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: `minmax(70px, 1fr) repeat(4, minmax(60px, 1fr))`, gap: '6px', alignItems: 'center', minWidth: '400px' }}>
+                        {/* Header */}
+                        <div style={{ fontSize: '0.8rem', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>KAZANAN</div>
+                        {winTypes.map(t => (
+                            <div key={t.value} style={{ fontSize: '0.8rem', textAlign: 'center', fontWeight: 'bold', color: t.color, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>
+                                {t.value}
+                            </div>
+                        ))}
 
-                    {/* Rows */}
-                    {players.map(p => (
-                        <React.Fragment key={p.id}>
-                            <div style={{ fontWeight: 'bold', fontSize: '1rem', textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</div>
-                            {winTypes.map(t => (
-                                <button
-                                    key={`${p.id}-${t.value}`}
-                                    className="glass-button"
-                                    style={{
-                                        padding: '10px 0',
-                                        background: 'rgba(255,255,255,0.08)',
-                                        fontSize: '0.9rem',
-                                        fontWeight: 600,
-                                        borderRadius: '8px'
-                                    }}
-                                    onMouseOver={(e) => { e.currentTarget.style.background = t.color; e.currentTarget.style.opacity = '1'; }}
-                                    onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.opacity = '1'; }}
-                                    onClick={() => handleAddRound(p.id, t.value, t.label)}
-                                >
-                                    {t.label}
-                                </button>
-                            ))}
-                        </React.Fragment>
-                    ))}
+                        {/* Rows */}
+                        {players.map(p => (
+                            <React.Fragment key={p.id}>
+                                <div style={{ fontWeight: 'bold', fontSize: '0.9rem', textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</div>
+                                {winTypes.map(t => (
+                                    <button
+                                        key={`${p.id}-${t.value}`}
+                                        className="glass-button"
+                                        style={{
+                                            padding: '8px 0',
+                                            background: 'rgba(255,255,255,0.08)',
+                                            fontSize: '0.9rem',
+                                            fontWeight: 600,
+                                            borderRadius: '6px',
+                                            minWidth: '40px' // Ensure clickable target
+                                        }}
+                                        onMouseOver={(e) => { e.currentTarget.style.background = t.color; e.currentTarget.style.opacity = '1'; }}
+                                        onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.opacity = '1'; }}
+                                        onClick={() => handleAddRound(p.id, t.value, t.label)}
+                                    >
+                                        {t.label}
+                                    </button>
+                                ))}
+                            </React.Fragment>
+                        ))}
+                    </div>
                 </div>
-                <p style={{ opacity: 0.5, fontSize: '0.8rem', marginTop: '1rem', textAlign: 'center' }}>
-                    Oyunu kazanan kişinin butonuna bas.
+                <p style={{ opacity: 0.5, fontSize: '0.75rem', marginTop: '0.8rem', textAlign: 'center' }}>
+                    Sağa kaydırarak diğer puanları görebilirsiniz.
                 </p>
             </div>
 
