@@ -155,9 +155,21 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
 
             {/* History Table */}
             {history.length > 0 && (
-                <div className="glass-panel" style={{ padding: '1rem', overflowX: 'auto' }}>
+                <div className="glass-panel" style={{
+                    padding: '1rem',
+                    overflowX: 'auto',
+                    width: '100%',
+                    maxWidth: '100%',
+                    boxSizing: 'border-box'
+                }}>
                     <h2 style={{ textAlign: 'left', marginTop: 0, fontSize: '1.5rem' }}>Oyun Geçmişi</h2>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white', fontSize: '0.9rem', minWidth: '600px' }}>
+                    <table style={{
+                        width: '100%',
+                        borderCollapse: 'collapse',
+                        color: 'white',
+                        fontSize: '0.9rem',
+                        minWidth: '600px' // Keep minWidth to force scroll inside the container, NOT the page
+                    }}>
                         <thead>
                             <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
                                 <th style={{ padding: '10px', textAlign: 'left' }}>#</th>
