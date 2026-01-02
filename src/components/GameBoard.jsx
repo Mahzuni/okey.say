@@ -43,56 +43,60 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
     return (
         <div className="fade-in" style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', paddingBottom: '5rem', boxSizing: 'border-box' }}>
 
-            {/* Sticky Score Header */}
+            {/* Sticky Score Header - Floating Pill Style */}
             <div style={{
                 position: 'sticky',
-                top: 0,
+                top: '10px',
                 zIndex: 100,
-                width: '100%',
-                background: 'rgba(36, 36, 36, 0.98)', // Slightly more unnecessary transparency
+                width: '96%', // Prevent touching edges
+                margin: '0 auto 1.5rem auto', // Centered
+                padding: '0.5rem',
+                background: 'rgba(36, 36, 36, 0.95)',
                 backdropFilter: 'blur(12px)',
-                borderBottom: '1px solid rgba(255,255,255,0.1)',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.4)',
-                padding: '0.5rem 0', // Vertical padding only
-                marginBottom: '1rem'
+                border: '1px solid rgba(255,255,255,0.1)',
+                boxShadow: '0 8px 20px rgba(0,0,0,0.4)',
+                borderRadius: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
             }}>
                 {stake && (
-                    <div style={{ marginBottom: '0.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                    <div style={{ marginBottom: '0.3rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
                         <Gift color="#FF69B4" size={14} />
                         <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>{stake}</span>
                     </div>
                 )}
 
                 <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: `repeat(${players.length}, 1fr)`,
-                    gap: '2px', // Minimal gap
-                    padding: '0 4px', // Minimal side padding
+                    display: 'flex', // Flex is often safer than grid for even distribution avoiding overflow
+                    justifyContent: 'space-between',
+                    gap: '4px',
                     width: '100%',
-                    boxSizing: 'border-box'
                 }}>
                     {players.map(p => (
                         <div key={p.id} style={{
+                            flex: 1,
                             display: 'flex', flexDirection: 'column', alignItems: 'center',
                             background: p.score <= 5 ? 'rgba(255, 107, 107, 0.15)' : 'rgba(255, 255, 255, 0.05)',
                             border: p.score <= 5 ? '1px solid #ff6b6b' : '1px solid rgba(255, 255, 255, 0.1)',
-                            borderRadius: '8px',
-                            padding: '0.3rem 0',
+                            borderRadius: '10px',
+                            padding: '0.4rem 0',
                             minWidth: 0
                         }}>
                             <div style={{
                                 fontSize: '0.75rem',
                                 fontWeight: 'bold',
+                                marginBottom: '0px',
                                 whiteSpace: 'nowrap',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 maxWidth: '100%',
                                 opacity: 0.9,
-                                padding: '0 2px'
+                                padding: '0 4px'
                             }}>
                                 {p.name}
                             </div>
-                            <div style={{ fontSize: '1.8rem', lineHeight: 1.1, fontWeight: 800, color: p.score <= 5 ? '#ff6b6b' : 'white' }}>
+                            <div style={{ fontSize: '1.6rem', lineHeight: 1.1, fontWeight: 800, color: p.score <= 5 ? '#ff6b6b' : 'white' }}>
                                 {p.score}
                             </div>
                         </div>
@@ -100,22 +104,22 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
                 </div>
             </div>
 
-            {/* Quick Input Grid - Scrollable */}
+            {/* Quick Input Grid - Minimalist Numbers */}
             <div className="glass-panel" style={{
                 marginBottom: '2rem',
                 padding: '1rem 0.5rem',
-                margin: '0 0.5rem 2rem 0.5rem' // Margin from screen edges
+                margin: '0 0.5rem 2rem 0.5rem'
             }}>
                 <h2 style={{ margin: '0 0 0.8rem 0', fontSize: '1.1rem', textAlign: 'center' }}>Hızlı Skor Girişi</h2>
 
                 {/* Scroll Container */}
                 <div style={{ overflowX: 'auto', paddingBottom: '5px', WebkitOverflowScrolling: 'touch' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: `minmax(70px, 1fr) repeat(4, minmax(60px, 1fr))`, gap: '6px', alignItems: 'center', minWidth: '400px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: `minmax(80px, 1fr) repeat(4, 1fr)`, gap: '6px', alignItems: 'center', minWidth: '320px' }}>
                         {/* Header */}
-                        <div style={{ fontSize: '0.8rem', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>KAZANAN</div>
+                        <div style={{ fontSize: '0.8rem', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>Oyuncu</div>
                         {winTypes.map(t => (
-                            <div key={t.value} style={{ fontSize: '0.8rem', textAlign: 'center', fontWeight: 'bold', color: t.color, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>
-                                {t.value}
+                            <div key={t.value} style={{ fontSize: '0.7rem', textAlign: 'center', fontWeight: 'bold', color: t.color, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px', opacity: 0.8 }}>
+                                {t.label.toUpperCase()}
                             </div>
                         ))}
 
@@ -128,18 +132,16 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
                                         key={`${p.id}-${t.value}`}
                                         className="glass-button"
                                         style={{
-                                            padding: '8px 0',
+                                            padding: '10px 0',
                                             background: 'rgba(255,255,255,0.08)',
-                                            fontSize: '0.9rem',
-                                            fontWeight: 600,
-                                            borderRadius: '6px',
-                                            minWidth: '40px' // Ensure clickable target
+                                            fontSize: '1.1rem', // Bigger number
+                                            fontWeight: 700,
+                                            borderRadius: '8px',
+                                            color: t.color // Color the number itself
                                         }}
-                                        onMouseOver={(e) => { e.currentTarget.style.background = t.color; e.currentTarget.style.opacity = '1'; }}
-                                        onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.opacity = '1'; }}
                                         onClick={() => handleAddRound(p.id, t.value, t.label)}
                                     >
-                                        {t.label}
+                                        {t.value}
                                     </button>
                                 ))}
                             </React.Fragment>
@@ -147,7 +149,7 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
                     </div>
                 </div>
                 <p style={{ opacity: 0.5, fontSize: '0.75rem', marginTop: '0.8rem', textAlign: 'center' }}>
-                    Sağa kaydırarak diğer puanları görebilirsiniz.
+                    Puan düşmek için sayıya tıkla.
                 </p>
             </div>
 
