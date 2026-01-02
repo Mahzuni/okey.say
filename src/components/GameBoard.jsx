@@ -41,59 +41,58 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
     };
 
     return (
-        <div className="fade-in" style={{ maxWidth: '1000px', margin: '0 auto', paddingBottom: '5rem' }}>
+        <div className="fade-in" style={{ maxWidth: '1000px', margin: '0 auto', paddingBottom: '5rem', overflowX: 'hidden' }}>
 
-            {/* Sticky Score Header - Optimized for mobile */}
+            {/* Sticky Score Header - Super Compact for Mobile */}
             <div style={{
                 position: 'sticky',
-                top: '10px',
+                top: '0px',
                 zIndex: 100,
-                // Negative margins counteract container padding, but on mobile container padding might be small. 
-                // Better to set width 100vw or similar if layout allows, but sticking to logic.
-                margin: '0 -1rem 2rem -1rem',
-                padding: '0.8rem 0.5rem',
+                margin: '0 -1rem 1rem -1rem',
+                padding: '0.5rem',
                 background: 'rgba(36, 36, 36, 0.95)',
                 backdropFilter: 'blur(12px)',
                 borderBottom: '1px solid rgba(255,255,255,0.1)',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-                borderRadius: '16px',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                borderRadius: '0 0 16px 16px', // Rounded only at bottom
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center'
             }}>
                 {stake && (
-                    <div style={{ marginBottom: '0.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                        <Gift color="#FF69B4" size={20} />
-                        <span style={{ fontSize: '1.1rem', fontWeight: 600 }}>{stake}</span>
+                    <div style={{ marginBottom: '0.4rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                        <Gift color="#FF69B4" size={16} />
+                        <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>{stake}</span>
                     </div>
                 )}
 
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: `repeat(${players.length}, 1fr)`,
-                    gap: '10px',
+                    gap: '4px', // Tighter gap
                     width: '100%',
-                    maxWidth: '100%'
                 }}>
                     {players.map(p => (
                         <div key={p.id} className="glass-panel" style={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center',
                             border: p.score <= 5 ? '2px solid rgba(255, 107, 107, 0.8)' : '1px solid rgba(255, 255, 255, 0.1)',
-                            padding: '0.5rem',
-                            minWidth: 0 // Allow shrinking
+                            padding: '0.4rem 0.2rem', // Reduced padding
+                            minWidth: 0,
+                            background: 'rgba(255, 255, 255, 0.05)'
                         }}>
                             <div style={{
-                                fontSize: '1rem',
+                                fontSize: '0.8rem', // Smaller Name
                                 fontWeight: 'bold',
-                                marginBottom: '0.2rem',
+                                marginBottom: '0px',
                                 whiteSpace: 'nowrap',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
-                                maxWidth: '100%'
+                                maxWidth: '100%',
+                                opacity: 0.9
                             }}>
                                 {p.name}
                             </div>
-                            <div style={{ fontSize: '2.5rem', lineHeight: 1, fontWeight: 800, color: p.score <= 5 ? '#ff6b6b' : 'white' }}>
+                            <div style={{ fontSize: '2rem', lineHeight: 1, fontWeight: 800, color: p.score <= 5 ? '#ff6b6b' : 'white' }}>
                                 {p.score}
                             </div>
                         </div>
@@ -101,14 +100,15 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
                 </div>
             </div>
 
-            {/* Quick Input Grid - Scrollable Container */}
-            <h2 style={{ marginTop: '1rem', fontSize: '1.5rem', textAlign: 'center' }}>Hızlı Skor Girişi</h2>
-            <div className="glass-panel" style={{ marginBottom: '3rem', overflowX: 'auto', padding: '1rem' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(100px, 1fr) repeat(4, 1fr)', gap: '10px', alignItems: 'center', minWidth: '600px' }}>
+            {/* Quick Input Grid - Compact and closer to top */}
+            <div className="glass-panel" style={{ marginBottom: '2rem', overflowX: 'auto', padding: '1rem 0.5rem' }}>
+                <h2 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem', textAlign: 'center' }}>Hızlı Skor Girişi</h2>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(80px, 1fr) repeat(4, 1fr)', gap: '8px', alignItems: 'center', minWidth: '500px' }}>
                     {/* Header */}
-                    <div style={{ fontSize: '1rem', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>KAZANAN</div>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>KAZANAN</div>
                     {winTypes.map(t => (
-                        <div key={t.value} style={{ fontSize: '1rem', textAlign: 'center', fontWeight: 'bold', color: t.color, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
+                        <div key={t.value} style={{ fontSize: '0.9rem', textAlign: 'center', fontWeight: 'bold', color: t.color, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>
                             {t.value}
                         </div>
                     ))}
@@ -116,16 +116,17 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
                     {/* Rows */}
                     {players.map(p => (
                         <React.Fragment key={p.id}>
-                            <div style={{ fontWeight: 'bold', fontSize: '1.1rem', textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</div>
+                            <div style={{ fontWeight: 'bold', fontSize: '1rem', textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</div>
                             {winTypes.map(t => (
                                 <button
                                     key={`${p.id}-${t.value}`}
                                     className="glass-button"
                                     style={{
-                                        padding: '12px 0',
+                                        padding: '10px 0',
                                         background: 'rgba(255,255,255,0.08)',
-                                        fontSize: '1rem',
-                                        fontWeight: 600
+                                        fontSize: '0.9rem',
+                                        fontWeight: 600,
+                                        borderRadius: '8px'
                                     }}
                                     onMouseOver={(e) => { e.currentTarget.style.background = t.color; e.currentTarget.style.opacity = '1'; }}
                                     onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.opacity = '1'; }}
