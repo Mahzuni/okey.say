@@ -65,9 +65,9 @@ const GameSetup = ({ onStartGame }) => {
                     </div>
                 </div>
 
-                {/* Row 2: Config Points & Stake - Stacked on mobile, Grid on wide */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <div style={{ gridColumn: 'span 1' }}>
+                {/* Row 2: Config Points & Stake - Flex with wrap for mobile stacking */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                    <div style={{ flex: '1 1 180px' }}>
                         <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', opacity: 0.8 }}>Başlangıç Puanı</label>
                         <input
                             type="number"
@@ -79,11 +79,7 @@ const GameSetup = ({ onStartGame }) => {
                         />
                     </div>
 
-                    {/* Stake spans full width if text is long, but let's make it span 2 on mobile via flex/grid tricks or just keep simple.
-                 User said it was "too wide". Grid 1fr 1fr splits it nicely. 
-                 But Stake might need more space. Let's make Starting Points small, Stake large.
-             */}
-                    <div style={{ gridColumn: 'span 2' }}>
+                    <div style={{ flex: '2 1 250px' }}>
                         <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', opacity: 0.8 }}>İddia / Ödül (İsteğe Bağlı)</label>
                         <input
                             type="text"
@@ -123,6 +119,10 @@ const GameSetup = ({ onStartGame }) => {
                 </button>
 
             </form>
+
+            <div style={{ marginTop: '2rem', fontSize: '0.8rem', opacity: 0.5, textAlign: 'center' }}>
+                v1.1 (Mobile Optimized)
+            </div>
         </div>
     );
 };
