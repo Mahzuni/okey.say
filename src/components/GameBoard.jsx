@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Gift, Trash2 } from 'lucide-react';
 
 const GameBoard = ({ players, stake, history, setHistory }) => {
@@ -25,18 +25,11 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
         setHistory(prev => prev.filter(r => r.id !== roundId));
     };
 
-    // Recalculate helper for table snapshots
-    // We need to re-derive the scores at each step for the history log
     const getRunningScores = (roundIndex) => {
-        // 1. Calculate STARTING score for player 0.
-        // players[0].score is CURRENT.
-        // Start = Current + TotalDeductions
         const totalLost = players[0].score + history.reduce((acc, r) => acc + (r.winnerId !== players[0].id ? r.deduction : 0), 0);
-
-        // 2. Play forward until roundIndex
         const snap = {};
         players.forEach(p => {
-            let sc = totalLost; // Assuming everyone started same
+            let sc = totalLost;
             for (let i = 0; i <= roundIndex; i++) {
                 if (history[i].winnerId !== p.id) {
                     sc -= history[i].deduction;
@@ -50,53 +43,72 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
     return (
         <div className="fade-in" style={{ maxWidth: '1000px', margin: '0 auto', paddingBottom: '5rem' }}>
 
-            {/* Sticky Score Header */}
+            {/* Sticky Score Header - Optimized for mobile */}
             <div style={{
                 position: 'sticky',
-                top: '20px',
+                top: '10px',
                 zIndex: 100,
-                margin: '0 -2rem 2rem -2rem', // Negative margin to break out of parent padding
-                padding: '1rem 2rem',
+                // Negative margins counteract container padding, but on mobile container padding might be small. 
+                // Better to set width 100vw or similar if layout allows, but sticking to logic.
+                margin: '0 -1rem 2rem -1rem',
+                padding: '0.8rem 0.5rem',
                 background: 'rgba(36, 36, 36, 0.95)',
                 backdropFilter: 'blur(12px)',
                 borderBottom: '1px solid rgba(255,255,255,0.1)',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-                borderRadius: '16px' // Make it look like a floating island
+                borderRadius: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
             }}>
                 {stake && (
-                    <div style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-                        <Gift color="#FF69B4" size={24} />
-                        <span style={{ fontSize: '1.4rem', fontWeight: 600 }}>Ödül: {stake}</span>
+                    <div style={{ marginBottom: '0.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                        <Gift color="#FF69B4" size={20} />
+                        <span style={{ fontSize: '1.1rem', fontWeight: 600 }}>{stake}</span>
                     </div>
                 )}
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1.5rem' }}>
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: `repeat(${players.length}, 1fr)`,
+                    gap: '10px',
+                    width: '100%',
+                    maxWidth: '100%'
+                }}>
                     {players.map(p => (
                         <div key={p.id} className="glass-panel" style={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center',
                             border: p.score <= 5 ? '2px solid rgba(255, 107, 107, 0.8)' : '1px solid rgba(255, 255, 255, 0.1)',
-                            padding: '1rem',
-                            transform: 'scale(1)', // Fix for stacking context if needed
-                            transition: 'all 0.3s ease'
+                            padding: '0.5rem',
+                            minWidth: 0 // Allow shrinking
                         }}>
-                            <div style={{ fontSize: '1.4rem', fontWeight: 'bold', marginBottom: '0.2rem' }}>{p.name}</div>
-                            <div style={{ fontSize: '4rem', lineHeight: 1, fontWeight: 800, color: p.score <= 5 ? '#ff6b6b' : 'white' }}>
+                            <div style={{
+                                fontSize: '1rem',
+                                fontWeight: 'bold',
+                                marginBottom: '0.2rem',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                maxWidth: '100%'
+                            }}>
+                                {p.name}
+                            </div>
+                            <div style={{ fontSize: '2.5rem', lineHeight: 1, fontWeight: 800, color: p.score <= 5 ? '#ff6b6b' : 'white' }}>
                                 {p.score}
                             </div>
-                            {/* <div style={{ fontSize: '0.9rem', opacity: 0.7 }}>Puan</div> */}
                         </div>
                     ))}
                 </div>
             </div>
 
-            {/* Quick Input Grid */}
-            <h2 style={{ marginTop: '1rem', fontSize: '2rem' }}>Hızlı Skor Girişi</h2>
-            <div className="glass-panel" style={{ marginBottom: '3rem', overflowX: 'auto', padding: '2rem' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(140px, 1fr) repeat(4, 1fr)', gap: '20px', alignItems: 'center', minWidth: '700px' }}>
+            {/* Quick Input Grid - Scrollable Container */}
+            <h2 style={{ marginTop: '1rem', fontSize: '1.5rem', textAlign: 'center' }}>Hızlı Skor Girişi</h2>
+            <div className="glass-panel" style={{ marginBottom: '3rem', overflowX: 'auto', padding: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(100px, 1fr) repeat(4, 1fr)', gap: '10px', alignItems: 'center', minWidth: '600px' }}>
                     {/* Header */}
-                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>KAZANAN</div>
+                    <div style={{ fontSize: '1rem', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>KAZANAN</div>
                     {winTypes.map(t => (
-                        <div key={t.value} style={{ fontSize: '1.2rem', textAlign: 'center', fontWeight: 'bold', color: t.color, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '15px' }}>
+                        <div key={t.value} style={{ fontSize: '1rem', textAlign: 'center', fontWeight: 'bold', color: t.color, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
                             {t.value}
                         </div>
                     ))}
@@ -104,15 +116,15 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
                     {/* Rows */}
                     {players.map(p => (
                         <React.Fragment key={p.id}>
-                            <div style={{ fontWeight: 'bold', fontSize: '1.5rem', textAlign: 'left' }}>{p.name}</div>
+                            <div style={{ fontWeight: 'bold', fontSize: '1.1rem', textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</div>
                             {winTypes.map(t => (
                                 <button
                                     key={`${p.id}-${t.value}`}
                                     className="glass-button"
                                     style={{
-                                        padding: '15px 0',
+                                        padding: '12px 0',
                                         background: 'rgba(255,255,255,0.08)',
-                                        fontSize: '1.2rem',
+                                        fontSize: '1rem',
                                         fontWeight: 600
                                     }}
                                     onMouseOver={(e) => { e.currentTarget.style.background = t.color; e.currentTarget.style.opacity = '1'; }}
@@ -125,27 +137,27 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
                         </React.Fragment>
                     ))}
                 </div>
-                <p style={{ opacity: 0.5, fontSize: '1rem', marginTop: '1.5rem' }}>
-                    Oyunu kazanan kişinin sırasındaki butona basarak puanı düşün.
+                <p style={{ opacity: 0.5, fontSize: '0.8rem', marginTop: '1rem', textAlign: 'center' }}>
+                    Oyunu kazanan kişinin butonuna bas.
                 </p>
             </div>
 
             {/* History Table */}
             {history.length > 0 && (
-                <div className="glass-panel" style={{ padding: '2rem', overflowX: 'auto' }}>
-                    <h2 style={{ textAlign: 'left', marginTop: 0, fontSize: '2rem' }}>Oyun Geçmişi</h2>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white', fontSize: '1.1rem' }}>
+                <div className="glass-panel" style={{ padding: '1rem', overflowX: 'auto' }}>
+                    <h2 style={{ textAlign: 'left', marginTop: 0, fontSize: '1.5rem' }}>Oyun Geçmişi</h2>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white', fontSize: '0.9rem', minWidth: '600px' }}>
                         <thead>
                             <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
-                                <th style={{ padding: '15px', textAlign: 'left' }}>#</th>
-                                <th style={{ padding: '15px', textAlign: 'left' }}>Saat</th>
-                                <th style={{ padding: '15px', textAlign: 'left' }}>Kazanan</th>
-                                <th style={{ padding: '15px', textAlign: 'left' }}>Tür</th>
-                                <th style={{ padding: '15px', textAlign: 'left' }}>Ceza</th>
+                                <th style={{ padding: '10px', textAlign: 'left' }}>#</th>
+                                <th style={{ padding: '10px', textAlign: 'left' }}>Saat</th>
+                                <th style={{ padding: '10px', textAlign: 'left' }}>Kazanan</th>
+                                <th style={{ padding: '10px', textAlign: 'left' }}>Tür</th>
+                                <th style={{ padding: '10px', textAlign: 'left' }}>Ceza</th>
                                 {players.map(p => (
-                                    <th key={p.id} style={{ padding: '15px', textAlign: 'center' }}>{p.name}</th>
+                                    <th key={p.id} style={{ padding: '10px', textAlign: 'center' }}>{p.name}</th>
                                 ))}
-                                <th style={{ padding: '15px' }}>Sil</th>
+                                <th style={{ padding: '10px' }}>Sil</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -153,16 +165,16 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
                                 const snap = getRunningScores(i);
                                 return (
                                     <tr key={h.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <td style={{ padding: '15px', textAlign: 'left' }}>{i + 1}</td>
-                                        <td style={{ padding: '15px', textAlign: 'left', opacity: 0.7, fontSize: '0.9rem' }}>
+                                        <td style={{ padding: '10px', textAlign: 'left' }}>{i + 1}</td>
+                                        <td style={{ padding: '10px', textAlign: 'left', opacity: 0.7, fontSize: '0.8rem' }}>
                                             {new Date(h.timestamp).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
                                         </td>
-                                        <td style={{ padding: '15px', textAlign: 'left' }}>{h.winnerName}</td>
-                                        <td style={{ padding: '15px', textAlign: 'left' }}>{h.winTypeLabel}</td>
-                                        <td style={{ padding: '15px', textAlign: 'left', color: '#ff6b6b' }}>-{h.deduction}</td>
+                                        <td style={{ padding: '10px', textAlign: 'left' }}>{h.winnerName}</td>
+                                        <td style={{ padding: '10px', textAlign: 'left' }}>{h.winTypeLabel}</td>
+                                        <td style={{ padding: '10px', textAlign: 'left', color: '#ff6b6b' }}>-{h.deduction}</td>
                                         {players.map(p => (
                                             <td key={p.id} style={{
-                                                padding: '15px',
+                                                padding: '10px',
                                                 textAlign: 'center',
                                                 fontWeight: 'bold',
                                                 opacity: h.winnerId === p.id ? 1 : 0.8,
@@ -171,13 +183,13 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
                                                 {snap[p.id]}
                                             </td>
                                         ))}
-                                        <td style={{ padding: '15px', textAlign: 'center' }}>
+                                        <td style={{ padding: '10px', textAlign: 'center' }}>
                                             <button
                                                 onClick={() => handleDeleteRound(h.id)}
                                                 style={{ background: 'none', border: 'none', color: '#ff6b6b', cursor: 'pointer', opacity: 0.7 }}
                                                 title="Bu eli sil"
                                             >
-                                                <Trash2 size={24} />
+                                                <Trash2 size={20} />
                                             </button>
                                         </td>
                                     </tr>
