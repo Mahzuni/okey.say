@@ -15,10 +15,12 @@
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  /* display: flex; REMOVED: Flex on body causes layout issues on mobile when content expands */
+  /* place-items: center; */
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: hidden;
+  /* Prevent horizontal scroll on body */
 
   /* Layered background: Image + Blur Overlay */
   background:
@@ -28,11 +30,11 @@ body {
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  /* Blur via backdrop-filter is on the content, but we want the BG blurred. 
-     Standard CSS filter on body affects children. 
-     Better to use a pseudo-element for the background if we want to blur JUST the image. 
+  /* Blur via backdrop-filter is on the content, but we want the BG blurred.
+     Standard CSS filter on body affects children.
+     Better to use a pseudo-element for the background if we want to blur JUST the image.
      But simpler: just assume the overlay + glassmorphism panels provide enough contrast.
-     User asked for "blurred okey stones". I will generate a blurred version? 
+     User asked for "blurred okey stones". I will generate a blurred version?
      No, I can use a pseudo element.
   */
 }
