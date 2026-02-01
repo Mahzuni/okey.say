@@ -13,6 +13,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   /* display: flex; REMOVED: Flex on body causes layout issues on mobile when content expands */
@@ -60,8 +66,14 @@ body::before {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   text-align: center;
+}
+
+@media (min-width: 600px) {
+  #root {
+    padding: 2rem;
+  }
 }
 
 /* Glassmorphism Utilities */
@@ -72,8 +84,14 @@ body::before {
   -webkit-backdrop-filter: blur(12px);
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  padding: 2rem;
+  padding: 1.25rem;
   color: white;
+}
+
+@media (min-width: 600px) {
+  .glass-panel {
+    padding: 2rem;
+  }
 }
 
 .glass-input {
