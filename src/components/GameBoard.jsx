@@ -48,7 +48,7 @@ const GameBoard = ({ players, stake, history, setHistory }) => {
                 position: 'sticky',
                 top: '10px',
                 zIndex: 100,
-                width: '96%', // Prevent touching edges
+                width: '94%', // Prevent touching edges
                 margin: '0 auto 1.5rem auto', // Centered
                 padding: '0.5rem',
                 background: 'rgba(36, 36, 36, 0.95)',

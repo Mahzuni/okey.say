@@ -35,7 +35,7 @@ const GameSetup = ({ onStartGame }) => {
     };
 
     return (
-        <div className="glass-panel fade-in" style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'left' }}>
+        <div className="glass-panel fade-in" style={{ width: '100%', maxWidth: '500px', margin: '0 auto', textAlign: 'left' }}>
             <h2 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
                 <Trophy size={28} color="#FFD700" />
                 Yeni Oyun Kurulumu
